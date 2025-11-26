@@ -1,0 +1,11 @@
+# Lindungi folder data dari akses langsung
+<Files "data/pertanyaan.json">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Redirect ke index.html sebagai halaman default
+DirectoryIndex index.html index.php
+
+# Error pages
+ErrorDocument 404 /index.html

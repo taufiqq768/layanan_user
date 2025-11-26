@@ -1,0 +1,95 @@
+========================================
+PANDUAN PENGGUNAAN APLIKASI LAYANAN USER
+========================================
+
+STRUKTUR FILE YANG DITAMBAHKAN:
+--------------------------------
+1. index.html - Halaman form untuk pengguna
+2. admin.php - Dashboard admin untuk melihat pertanyaan
+3. process.php - Backend untuk memproses data
+4. style.css - Styling halaman utama
+5. script.js - JavaScript untuk validasi
+6. .htaccess - Keamanan (sudah ada, ditimpa)
+7. data/pertanyaan.json - File penyimpanan (dibuat otomatis)
+
+CARA AKSES:
+-----------
+1. Halaman Pengguna:
+   http://localhost/layanan_user/index.html
+   atau
+   http://localhost/layanan_user/
+
+2. Dashboard Admin:
+   http://localhost/layanan_user/admin.php
+
+FITUR UTAMA:
+------------
+✓ Form pertanyaan dengan validasi
+✓ Input email dan/atau WhatsApp
+✓ Validasi real-time
+✓ Penyimpanan data dalam JSON
+✓ Dashboard admin dengan statistik
+✓ Link langsung email dan WhatsApp
+✓ Responsive design
+
+VALIDASI:
+---------
+- Pertanyaan: Wajib diisi
+- Email: Format email valid (opsional)
+- WhatsApp: Minimal 10 digit (opsional)
+- Minimal 1 kontak (email ATAU whatsapp) harus diisi
+
+DATA YANG DISIMPAN:
+-------------------
+- Timestamp
+- Pertanyaan
+- Email (jika diisi)
+- Nomor WhatsApp (jika diisi)
+- IP Address pengguna
+
+KEAMANAN:
+---------
+✓ Input dibersihkan dari XSS
+✓ Validasi client dan server side
+✓ Folder data dilindungi .htaccess
+✓ IP tracking untuk monitoring
+
+CATATAN PENTING:
+----------------
+- File ini berjalan standalone di folder Laravel
+- Tidak menggunakan routing Laravel
+- Data disimpan di folder data/pertanyaan.json
+- Untuk production, disarankan menggunakan database
+- Untuk admin, sebaiknya tambahkan authentication
+
+PENGEMBANGAN LEBIH LANJUT:
+--------------------------
+1. Integrasi dengan Laravel routing
+2. Gunakan Eloquent untuk database
+3. Tambahkan authentication untuk admin
+4. Email notification ke admin
+5. Export data ke Excel/CSV
+6. Status pertanyaan (pending/replied/closed)
+7. Search dan filter
+8. Pagination
+
+TROUBLESHOOTING:
+----------------
+Q: Error "Cannot write to file"
+A: Pastikan folder memiliki permission write (755)
+
+Q: Data tidak tersimpan
+A: Periksa folder data/ sudah dibuat otomatis
+
+Q: Halaman admin kosong
+A: Pastikan file data/pertanyaan.json ada
+
+Q: WhatsApp link tidak berfungsi
+A: Pastikan nomor dalam format internasional
+
+KONTAK:
+-------
+Untuk pertanyaan lebih lanjut, silakan modifikasi
+sesuai kebutuhan Anda.
+
+========================================
