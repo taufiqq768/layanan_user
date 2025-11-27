@@ -241,6 +241,9 @@ class LayananController extends Controller
         }
 
         try {
+            // Set timeout maksimal untuk keseluruhan proses (30 detik)
+            set_time_limit(30);
+
             $gambarJawabanPath = $pertanyaan->gambar_jawaban;
 
             // Handle upload gambar jawaban
@@ -256,7 +259,7 @@ class LayananController extends Controller
                 $gambarJawabanPath = 'uploads/pertanyaan/' . $filename;
             }
 
-            // Update data pertanyaan
+            // Update data pertanyaan DULU - ini yang paling penting
             $pertanyaan->update([
                 'jawaban' => $request->jawaban,
                 'gambar_jawaban' => $gambarJawabanPath,
@@ -265,23 +268,32 @@ class LayananController extends Controller
                 'status' => 'replied'
             ]);
 
+            // Kirim response DULU sebelum proses email/WA
+            $response = response()->json([
+                'success' => true,
+                'message' => 'Jawaban berhasil disimpan! Notifikasi sedang dikirim ke pengguna.'
+            ]);
+
+            // Kirim response dan flush output buffer
+            if (function_exists('fastcgi_finish_request')) {
+                $response->send();
+                fastcgi_finish_request();
+            }
+
+            // Proses notifikasi SETELAH response dikirim (tidak akan block user)
             $messages = [];
 
-            // Kirim via Email dengan timeout handling
+            // Kirim via Email
             if ($sendEmail && $pertanyaan->email) {
                 try {
-                    // Set timeout untuk email (max 10 detik)
-                    set_time_limit(15);
                     Mail::to($pertanyaan->email)->send(new PertanyaanDijawab($pertanyaan));
-                    $messages[] = 'Email berhasil dikirim ke ' . $pertanyaan->email;
+                    \Log::info("Email sent successfully to {$pertanyaan->email}");
                 } catch (\Exception $e) {
-                    // Log error tapi tetap lanjutkan proses
                     \Log::error('Email sending failed: ' . $e->getMessage());
-                    $messages[] = 'Email gagal dikirim (akan dicoba ulang di background)';
                 }
             }
 
-            // Kirim via WhatsApp menggunakan WAHA dengan timeout handling
+            // Kirim via WhatsApp
             if ($sendWhatsapp && $pertanyaan->whatsapp) {
                 try {
                     $whatsappService = new WhatsAppService();
@@ -299,45 +311,34 @@ class LayananController extends Controller
                     $waMessage .= "_Dijawab oleh: {$pertanyaan->replied_by}_\n";
                     $waMessage .= "_Tanggal: " . now()->format('d/m/Y H:i') . "_";
 
-                    // Kirim pesan teks dengan timeout handling
                     $result = $whatsappService->sendMessage($pertanyaan->whatsapp, $waMessage);
 
                     if ($result['success']) {
-                        $messages[] = 'WhatsApp berhasil dikirim ke ' . $pertanyaan->whatsapp;
+                        \Log::info("WhatsApp sent successfully to {$pertanyaan->whatsapp}");
 
-                        // Kirim gambar di background (jangan block response)
-                        try {
-                            if ($pertanyaan->gambar) {
-                                $whatsappService->sendImage(
-                                    $pertanyaan->whatsapp,
-                                    $pertanyaan->gambar,
-                                    '📷 Screenshot pertanyaan Anda'
-                                );
-                            }
-
-                            if ($pertanyaan->gambar_jawaban) {
-                                $whatsappService->sendImage(
-                                    $pertanyaan->whatsapp,
-                                    $pertanyaan->gambar_jawaban,
-                                    '📷 Screenshot jawaban dari admin'
-                                );
-                            }
-                        } catch (\Exception $imgError) {
-                            \Log::error('WhatsApp image sending failed: ' . $imgError->getMessage());
+                        // Kirim gambar
+                        if ($pertanyaan->gambar) {
+                            $whatsappService->sendImage(
+                                $pertanyaan->whatsapp,
+                                $pertanyaan->gambar,
+                                '📷 Screenshot pertanyaan Anda'
+                            );
                         }
-                    } else {
-                        $messages[] = 'Gagal mengirim WhatsApp: ' . ($result['error'] ?? 'Unknown error');
+
+                        if ($pertanyaan->gambar_jawaban) {
+                            $whatsappService->sendImage(
+                                $pertanyaan->whatsapp,
+                                $pertanyaan->gambar_jawaban,
+                                '📷 Screenshot jawaban dari admin'
+                            );
+                        }
                     }
                 } catch (\Exception $e) {
                     \Log::error('WhatsApp sending failed: ' . $e->getMessage());
-                    $messages[] = 'WhatsApp gagal dikirim (akan dicoba ulang di background)';
                 }
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Jawaban berhasil disimpan! ' . implode('. ', $messages)
-            ]);
+            return $response;
 
         } catch (\Exception $e) {
             return response()->json([
