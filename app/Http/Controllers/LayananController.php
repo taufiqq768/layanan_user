@@ -14,14 +14,49 @@ use App\Services\WhatsAppService;
 class LayananController extends Controller
 {
     // Menampilkan halaman form layanan
-    public function index()
+    public function index(Request $request)
     {
+        $selectedApp = null;
+
+        // Cek parameter 'app' dari URL
+        if ($request->has('app')) {
+            $appParam = strtoupper(trim($request->get('app')));
+
+            // Validasi aplikasi ada dan aktif
+            $aplikasi = Aplikasi::where('inisial', $appParam)
+                ->where('is_active', true)
+                ->first();
+
+            if ($aplikasi) {
+                $selectedApp = $aplikasi->inisial;
+            }
+        }
+
+        // Cek parameter 'token' dari URL (opsional untuk keamanan)
+        if ($request->has('token') && !$selectedApp) {
+            $token = trim($request->get('token'));
+
+            // Validasi token dan ambil aplikasi terkait
+            $aplikasi = Aplikasi::where('access_token', $token)
+                ->where('is_active', true)
+                ->first();
+
+            if ($aplikasi) {
+                $selectedApp = $aplikasi->inisial;
+            }
+        }
+
+        // Jika tidak ada parameter yang valid, tampilkan halaman error
+        if (!$selectedApp) {
+            return view('layanan.access-denied');
+        }
+
         // Ambil daftar aplikasi dari database (hanya yang aktif)
         $aplikasiList = Aplikasi::active()
             ->orderBy('inisial')
             ->pluck('inisial', 'inisial');
 
-        return view('layanan.index', compact('aplikasiList'));
+        return view('layanan.index', compact('aplikasiList', 'selectedApp'));
     }
 
     // Menyimpan pertanyaan ke database

@@ -11,6 +11,7 @@ class Aplikasi extends Model
     protected $fillable = [
         'inisial',
         'nama',
+        'access_token',
         'is_active',
     ];
 

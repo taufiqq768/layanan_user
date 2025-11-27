@@ -382,6 +382,13 @@
             const aplikasiSelect = document.getElementById('aplikasi');
             const btnFaq = document.getElementById('btnFaq');
 
+            // Auto-select aplikasi jika ada parameter dari URL
+            @if(isset($selectedApp) && $selectedApp)
+                aplikasiSelect.value = '{{ $selectedApp }}';
+                // Enable FAQ button since aplikasi is auto-selected
+                btnFaq.disabled = false;
+            @endif
+
             // Enable/disable FAQ button based on aplikasi selection
             aplikasiSelect.addEventListener('change', function() {
                 if (this.value) {
