@@ -27,15 +27,15 @@ class LayananController extends Controller
     // Menyimpan pertanyaan ke database
     public function store(Request $request)
     {
-        // Validasi input
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'aplikasi' => 'required|string|max:255',
             'pertanyaan' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'email' => 'nullable|email|max:255',
             'whatsapp' => 'nullable|string|min:10|max:20',
-            'g-recaptcha-response' => 'required|captcha',
-        ], [
+        ];
+
+        $messages = [
             'aplikasi.required' => 'Pilih aplikasi terlebih dahulu',
             'pertanyaan.required' => 'Pertanyaan harus diisi',
             'gambar.image' => 'File harus berupa gambar',
@@ -43,9 +43,17 @@ class LayananController extends Controller
             'gambar.max' => 'Ukuran gambar maksimal 2MB',
             'email.email' => 'Format email tidak valid',
             'whatsapp.min' => 'Nomor WhatsApp minimal 10 digit',
-            'g-recaptcha-response.required' => 'Mohon centang CAPTCHA',
-            'g-recaptcha-response.captcha' => 'Verifikasi CAPTCHA gagal, silakan coba lagi',
-        ]);
+        ];
+
+        // Only validate CAPTCHA if enabled
+        if (config('captcha.enabled', true)) {
+            $rules['g-recaptcha-response'] = 'required|captcha';
+            $messages['g-recaptcha-response.required'] = 'Mohon centang CAPTCHA';
+            $messages['g-recaptcha-response.captcha'] = 'Verifikasi CAPTCHA gagal, silakan coba lagi';
+        }
+
+        // Validasi input
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         // Validasi custom: minimal satu kontak harus diisi
         $validator->after(function ($validator) use ($request) {

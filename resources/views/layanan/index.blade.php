@@ -342,7 +342,7 @@
                 <div class="form-group">
                     <label>Agar kami dapat merespon silakan isi Email dan/atau nomor WhatsApp</label>
 
-                    <label for="email">Email</label>
+                    <label for="email" class="note">Email</label>
                     <input
                         type="email"
                         id="email"
@@ -350,7 +350,7 @@
                         placeholder="contoh@email.com"
                     >
                     <span class="error-message" id="error-email"></span>
-                    <label for="whatsapp">Nomor WhatsApp</label>
+                    <label for="whatsapp" class="note">Nomor WhatsApp</label>
                     <input
                         type="tel"
                         id="whatsapp"
@@ -361,10 +361,12 @@
                 <p class="note">* Minimal satu kontak (Email atau WhatsApp) harus diisi</p>
                 </div>
 
+                @if(config('captcha.enabled', true))
                 <div class="form-group" style="margin-bottom: 20px;">
                     {!! NoCaptcha::display() !!}
                     <span class="error-message" id="error-captcha"></span>
                 </div>
+                @endif
 
                 <button type="submit" class="btn-submit">Kirim Pertanyaan</button>
             </form>

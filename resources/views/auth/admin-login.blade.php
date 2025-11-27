@@ -223,12 +223,14 @@
                 <label for="remember">Ingat saya</label>
             </div>
 
+            @if(config('captcha.enabled', true))
             <div class="form-group" style="margin-bottom: 20px;">
                 {!! NoCaptcha::display() !!}
                 @error('g-recaptcha-response')
                     <span style="color: #c33; font-size: 13px; margin-top: 5px; display: block;">{{ $message }}</span>
                 @enderror
             </div>
+            @endif
 
             <button type="submit" class="submit-btn">Masuk</button>
         </form>

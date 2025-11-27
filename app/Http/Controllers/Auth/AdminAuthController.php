@@ -25,18 +25,26 @@ class AdminAuthController extends Controller
     // Proses login
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'email' => 'required|email',
             'password' => 'required|min:6',
-            'g-recaptcha-response' => 'required|captcha',
-        ], [
+        ];
+
+        $messages = [
             'email.required' => 'Email harus diisi',
             'email.email' => 'Format email tidak valid',
             'password.required' => 'Password harus diisi',
             'password.min' => 'Password minimal 6 karakter',
-            'g-recaptcha-response.required' => 'Mohon centang CAPTCHA',
-            'g-recaptcha-response.captcha' => 'Verifikasi CAPTCHA gagal, silakan coba lagi',
-        ]);
+        ];
+
+        // Only validate CAPTCHA if enabled
+        if (config('captcha.enabled', true)) {
+            $rules['g-recaptcha-response'] = 'required|captcha';
+            $messages['g-recaptcha-response.required'] = 'Mohon centang CAPTCHA';
+            $messages['g-recaptcha-response.captcha'] = 'Verifikasi CAPTCHA gagal, silakan coba lagi';
+        }
+
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
