@@ -150,26 +150,31 @@ class LayananController extends Controller
             ->whereIn('aplikasi', $adminAplikasi)
             ->orderBy('created_at', 'desc');
 
+        // Base query untuk statistik (mengikuti filter yang sama)
+        $statsQuery = Pertanyaan::query()->whereIn('aplikasi', $adminAplikasi);
+
         // Filter berdasarkan aplikasi
         if ($request->has('aplikasi') && $request->aplikasi != '') {
             $query->byAplikasi($request->aplikasi);
+            $statsQuery->byAplikasi($request->aplikasi);
         }
 
         // Filter berdasarkan status
         if ($request->has('status') && $request->status != '') {
             $query->byStatus($request->status);
+            // Status filter tidak diterapkan ke stats agar tetap menampilkan breakdown
         }
 
         $pertanyaan = $query->get();
 
-        // Statistik (hanya untuk aplikasi yang di-handle admin)
+        // Statistik DINAMIS - berdasarkan filter aplikasi yang dipilih
         $stats = [
-            'total' => Pertanyaan::whereIn('aplikasi', $adminAplikasi)->count(),
-            'pending' => Pertanyaan::whereIn('aplikasi', $adminAplikasi)->where('status', 'pending')->count(),
-            'replied' => Pertanyaan::whereIn('aplikasi', $adminAplikasi)->where('status', 'replied')->count(),
-            'closed' => Pertanyaan::whereIn('aplikasi', $adminAplikasi)->where('status', 'closed')->count(),
-            'dengan_email' => Pertanyaan::whereIn('aplikasi', $adminAplikasi)->whereNotNull('email')->where('email', '!=', '')->count(),
-            'dengan_whatsapp' => Pertanyaan::whereIn('aplikasi', $adminAplikasi)->whereNotNull('whatsapp')->where('whatsapp', '!=', '')->count(),
+            'total' => (clone $statsQuery)->count(),
+            'pending' => (clone $statsQuery)->where('status', 'pending')->count(),
+            'replied' => (clone $statsQuery)->where('status', 'replied')->count(),
+            'closed' => (clone $statsQuery)->where('status', 'closed')->count(),
+            'dengan_email' => (clone $statsQuery)->whereNotNull('email')->where('email', '!=', '')->count(),
+            'dengan_whatsapp' => (clone $statsQuery)->whereNotNull('whatsapp')->where('whatsapp', '!=', '')->count(),
         ];
 
         // Daftar aplikasi untuk filter (hanya aplikasi yang di-handle)

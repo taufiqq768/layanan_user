@@ -31,30 +31,157 @@
 
     .stat-card {
         background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 25px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
         text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: all 0.3s ease;
+        border-left: 4px solid;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card:hover::before {
+        opacity: 1;
     }
 
     .stat-card h3 {
-        font-size: 2.5em;
-        margin-bottom: 10px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        font-size: 2.8em;
+        margin-bottom: 8px;
+        font-weight: 700;
+        line-height: 1;
     }
 
     .stat-card p {
-        color: #666;
-        font-size: 0.9em;
+        font-size: 0.85em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+
+    /* Card Total - Blue Gradient */
+    .stat-card.total {
+        border-left-color: #3b82f6;
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    }
+
+    .stat-card.total::before {
+        background: linear-gradient(90deg, #3b82f6, #2563eb);
+    }
+
+    .stat-card.total h3 {
+        color: #1e40af;
+    }
+
+    .stat-card.total p {
+        color: #3b82f6;
+    }
+
+    /* Card Pending - Orange Gradient */
+    .stat-card.pending {
+        border-left-color: #f59e0b;
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    }
+
+    .stat-card.pending::before {
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+    }
+
+    .stat-card.pending h3 {
+        color: #b45309;
+    }
+
+    .stat-card.pending p {
+        color: #f59e0b;
+    }
+
+    /* Card Replied - Green Gradient */
+    .stat-card.replied {
+        border-left-color: #10b981;
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    }
+
+    .stat-card.replied::before {
+        background: linear-gradient(90deg, #10b981, #059669);
+    }
+
+    .stat-card.replied h3 {
+        color: #047857;
+    }
+
+    .stat-card.replied p {
+        color: #10b981;
+    }
+
+    /* Card Closed - Purple Gradient */
+    .stat-card.closed {
+        border-left-color: #8b5cf6;
+        background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    }
+
+    .stat-card.closed::before {
+        background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+    }
+
+    .stat-card.closed h3 {
+        color: #6d28d9;
+    }
+
+    .stat-card.closed p {
+        color: #8b5cf6;
+    }
+
+    /* Card Email - Cyan Gradient */
+    .stat-card.email {
+        border-left-color: #06b6d4;
+        background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+    }
+
+    .stat-card.email::before {
+        background: linear-gradient(90deg, #06b6d4, #0891b2);
+    }
+
+    .stat-card.email h3 {
+        color: #0e7490;
+    }
+
+    .stat-card.email p {
+        color: #06b6d4;
+    }
+
+    /* Card WhatsApp - Teal Gradient */
+    .stat-card.whatsapp {
+        border-left-color: #14b8a6;
+        background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+    }
+
+    .stat-card.whatsapp::before {
+        background: linear-gradient(90deg, #14b8a6, #0d9488);
+    }
+
+    .stat-card.whatsapp h3 {
+        color: #0f766e;
+    }
+
+    .stat-card.whatsapp p {
+        color: #14b8a6;
     }
 
     .filters {
@@ -382,27 +509,27 @@
 </div>
 
 <div class="stats">
-    <div class="stat-card">
+    <div class="stat-card total">
         <h3>{{ $stats['total'] }}</h3>
         <p>Total Pertanyaan</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-card pending">
         <h3>{{ $stats['pending'] }}</h3>
         <p>Pending</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-card replied">
         <h3>{{ $stats['replied'] }}</h3>
         <p>Replied</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-card closed">
         <h3>{{ $stats['closed'] }}</h3>
         <p>Closed</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-card email">
         <h3>{{ $stats['dengan_email'] }}</h3>
         <p>Dengan Email</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-card whatsapp">
         <h3>{{ $stats['dengan_whatsapp'] }}</h3>
         <p>Dengan WhatsApp</p>
     </div>
