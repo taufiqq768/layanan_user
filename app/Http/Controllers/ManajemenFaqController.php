@@ -11,7 +11,7 @@ class ManajemenFaqController extends Controller
 {
     public function index()
     {
-        $faqList = Faq::orderBy('aplikasi')->orderBy('urutan')->get();
+        $faqList = Faq::orderBy('aplikasi')->orderBy('created_at', 'desc')->get();
         $aplikasiList = Aplikasi::active()->get();
 
         return view('manajemen.faq', compact('faqList', 'aplikasiList'));
@@ -23,14 +23,11 @@ class ManajemenFaqController extends Controller
             'aplikasi' => 'required|string|max:50',
             'pertanyaan' => 'required|string',
             'jawaban' => 'required|string',
-            'urutan' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
         ], [
             'aplikasi.required' => 'Aplikasi harus dipilih',
             'pertanyaan.required' => 'Pertanyaan harus diisi',
             'jawaban.required' => 'Jawaban harus diisi',
-            'urutan.required' => 'Urutan harus diisi',
-            'urutan.min' => 'Urutan minimal 0',
             'is_active.required' => 'Status aktif harus dipilih',
         ]);
 
@@ -64,14 +61,11 @@ class ManajemenFaqController extends Controller
             'aplikasi' => 'required|string|max:50',
             'pertanyaan' => 'required|string',
             'jawaban' => 'required|string',
-            'urutan' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
         ], [
             'aplikasi.required' => 'Aplikasi harus dipilih',
             'pertanyaan.required' => 'Pertanyaan harus diisi',
             'jawaban.required' => 'Jawaban harus diisi',
-            'urutan.required' => 'Urutan harus diisi',
-            'urutan.min' => 'Urutan minimal 0',
             'is_active.required' => 'Status aktif harus dipilih',
         ]);
 

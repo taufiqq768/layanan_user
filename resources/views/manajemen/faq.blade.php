@@ -261,7 +261,6 @@
                 <th>Aplikasi</th>
                 <th>Pertanyaan</th>
                 <th>Jawaban</th>
-                <th>Urutan</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
@@ -273,7 +272,6 @@
                 <td><strong>{{ $faq->aplikasi }}</strong></td>
                 <td>{{ Str::limit($faq->pertanyaan, 60) }}</td>
                 <td>{{ Str::limit($faq->jawaban, 60) }}</td>
-                <td>{{ $faq->urutan }}</td>
                 <td>
                     <span class="badge {{ $faq->is_active ? 'active' : 'inactive' }}">
                         {{ $faq->is_active ? 'Aktif' : 'Tidak Aktif' }}
@@ -290,7 +288,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
                     Belum ada data FAQ
                 </td>
             </tr>
@@ -331,12 +329,6 @@
                 <label for="jawaban">Jawaban <span style="color: red;">*</span></label>
                 <textarea id="jawaban" name="jawaban" required
                           placeholder="Tulis jawaban lengkap untuk pertanyaan di atas..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="urutan">Urutan Tampilan <span style="color: red;">*</span></label>
-                <input type="number" id="urutan" name="urutan" min="0" value="0" required
-                       placeholder="Urutan FAQ (0 = paling atas)">
             </div>
 
             <div class="form-group">
@@ -396,7 +388,6 @@
         document.getElementById('aplikasi').value = data.aplikasi;
         document.getElementById('pertanyaan').value = data.pertanyaan;
         document.getElementById('jawaban').value = data.jawaban;
-        document.getElementById('urutan').value = data.urutan;
 
         // Set radio button
         const radioActive = document.querySelector(`input[name="is_active"][value="${data.is_active ? '1' : '0'}"]`);

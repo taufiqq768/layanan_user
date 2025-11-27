@@ -12,13 +12,11 @@ class Faq extends Model
         'aplikasi',
         'pertanyaan',
         'jawaban',
-        'urutan',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        'urutan' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

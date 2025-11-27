@@ -342,7 +342,7 @@ class LayananController extends Controller
         // Ambil data FAQ berdasarkan aplikasi
         $faqList = Faq::active()
             ->byAplikasi($aplikasi)
-            ->orderBy('urutan')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Ambil info aplikasi
