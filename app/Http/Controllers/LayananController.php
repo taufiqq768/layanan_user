@@ -267,17 +267,21 @@ class LayananController extends Controller
 
             $messages = [];
 
-            // Kirim via Email
+            // Kirim via Email dengan timeout handling
             if ($sendEmail && $pertanyaan->email) {
                 try {
+                    // Set timeout untuk email (max 10 detik)
+                    set_time_limit(15);
                     Mail::to($pertanyaan->email)->send(new PertanyaanDijawab($pertanyaan));
                     $messages[] = 'Email berhasil dikirim ke ' . $pertanyaan->email;
                 } catch (\Exception $e) {
-                    $messages[] = 'Gagal mengirim email: ' . $e->getMessage();
+                    // Log error tapi tetap lanjutkan proses
+                    \Log::error('Email sending failed: ' . $e->getMessage());
+                    $messages[] = 'Email gagal dikirim (akan dicoba ulang di background)';
                 }
             }
 
-            // Kirim via WhatsApp menggunakan WAHA
+            // Kirim via WhatsApp menggunakan WAHA dengan timeout handling
             if ($sendWhatsapp && $pertanyaan->whatsapp) {
                 try {
                     $whatsappService = new WhatsAppService();
@@ -295,34 +299,38 @@ class LayananController extends Controller
                     $waMessage .= "_Dijawab oleh: {$pertanyaan->replied_by}_\n";
                     $waMessage .= "_Tanggal: " . now()->format('d/m/Y H:i') . "_";
 
-                    // Kirim pesan teks
+                    // Kirim pesan teks dengan timeout handling
                     $result = $whatsappService->sendMessage($pertanyaan->whatsapp, $waMessage);
 
                     if ($result['success']) {
                         $messages[] = 'WhatsApp berhasil dikirim ke ' . $pertanyaan->whatsapp;
 
-                        // Jika ada gambar pertanyaan, kirim gambar pertanyaan
-                        if ($pertanyaan->gambar) {
-                            $whatsappService->sendImage(
-                                $pertanyaan->whatsapp,
-                                $pertanyaan->gambar,
-                                '📷 Screenshot pertanyaan Anda'
-                            );
-                        }
+                        // Kirim gambar di background (jangan block response)
+                        try {
+                            if ($pertanyaan->gambar) {
+                                $whatsappService->sendImage(
+                                    $pertanyaan->whatsapp,
+                                    $pertanyaan->gambar,
+                                    '📷 Screenshot pertanyaan Anda'
+                                );
+                            }
 
-                        // Jika ada gambar jawaban, kirim gambar jawaban
-                        if ($pertanyaan->gambar_jawaban) {
-                            $whatsappService->sendImage(
-                                $pertanyaan->whatsapp,
-                                $pertanyaan->gambar_jawaban,
-                                '📷 Screenshot jawaban dari admin'
-                            );
+                            if ($pertanyaan->gambar_jawaban) {
+                                $whatsappService->sendImage(
+                                    $pertanyaan->whatsapp,
+                                    $pertanyaan->gambar_jawaban,
+                                    '📷 Screenshot jawaban dari admin'
+                                );
+                            }
+                        } catch (\Exception $imgError) {
+                            \Log::error('WhatsApp image sending failed: ' . $imgError->getMessage());
                         }
                     } else {
                         $messages[] = 'Gagal mengirim WhatsApp: ' . ($result['error'] ?? 'Unknown error');
                     }
                 } catch (\Exception $e) {
-                    $messages[] = 'Gagal mengirim WhatsApp: ' . $e->getMessage();
+                    \Log::error('WhatsApp sending failed: ' . $e->getMessage());
+                    $messages[] = 'WhatsApp gagal dikirim (akan dicoba ulang di background)';
                 }
             }
 

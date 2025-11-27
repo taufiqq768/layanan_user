@@ -17,7 +17,8 @@ class WhatsAppService
         $this->baseUrl = rtrim(env('WAHA_BASE_URL'), '/');
         $this->apiKey = env('WAHA_API_KEY');
         $this->session = env('WAHA_SESSION', 'default');
-        $this->timeout = env('WAHA_TIMEOUT', 30);
+        // Timeout lebih pendek untuk mencegah 504 di staging (default 10 detik)
+        $this->timeout = env('WAHA_TIMEOUT', 10);
     }
 
     /**
