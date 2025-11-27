@@ -28,6 +28,9 @@ class Admin extends Authenticatable
         'updated_at' => 'datetime',
     ];
 
+    // Automatically append attribute accessors when serializing
+    protected $appends = ['aplikasi_list'];
+
     // Relasi many-to-many dengan aplikasi
     public function aplikasi()
     {
