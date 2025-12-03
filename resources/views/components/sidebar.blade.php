@@ -222,8 +222,9 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h2>Helpdesk Layanan</h2>
-            <h2>Aplikasi PTPN I</h2>
+            <img src="{{ asset('images/logo2.png') }}" alt="Logo PTPN I" class="logo">
+            <h4>Helpdesk Layanan Aplikasi PTPN I</h4>
+            <h2></h2>
             <p>Admin Panel</p>
         </div>
 
@@ -231,14 +232,16 @@
             <!-- Main Menu -->
             <div class="menu-section">
                 <div class="menu-section-title">Menu Utama</div>
-                <a href="{{ route('layanan.admin') }}" class="menu-item {{ request()->routeIs('layanan.admin') ? 'active' : '' }}">
+                <a href="{{ route('layanan.admin') }}"
+                    class="menu-item {{ request()->routeIs('layanan.admin') ? 'active' : '' }}">
                     <span class="icon">📋</span>
                     <span class="text">Dashboard</span>
                     @if(isset($stats['pending']) && $stats['pending'] > 0)
                         <span class="badge">{{ $stats['pending'] }}</span>
                     @endif
                 </a>
-                <a href="{{ route('layanan.index') }}" class="menu-item {{ request()->routeIs('layanan.index') ? 'active' : '' }}">
+                <a href="{{ route('layanan.index') }}"
+                    class="menu-item {{ request()->routeIs('layanan.index') ? 'active' : '' }}">
                     <span class="icon">🏠</span>
                     <span class="text">Halaman User</span>
                 </a>
@@ -247,21 +250,24 @@
             <!-- Pertanyaan -->
             <div class="menu-section">
                 <div class="menu-section-title">Pertanyaan</div>
-                <a href="{{ route('layanan.admin') }}?status=pending" class="menu-item {{ request()->get('status') == 'pending' ? 'active' : '' }}">
+                <a href="{{ route('layanan.admin') }}?status=pending"
+                    class="menu-item {{ request()->get('status') == 'pending' ? 'active' : '' }}">
                     <span class="icon">⏳</span>
                     <span class="text">Pending</span>
                     @if(isset($stats['pending']))
                         <span class="badge">{{ $stats['pending'] }}</span>
                     @endif
                 </a>
-                <a href="{{ route('layanan.admin') }}?status=replied" class="menu-item {{ request()->get('status') == 'replied' ? 'active' : '' }}">
+                <a href="{{ route('layanan.admin') }}?status=replied"
+                    class="menu-item {{ request()->get('status') == 'replied' ? 'active' : '' }}">
                     <span class="icon">✅</span>
                     <span class="text">Dijawab</span>
                     @if(isset($stats['replied']))
                         <span class="badge">{{ $stats['replied'] }}</span>
                     @endif
                 </a>
-                <a href="{{ route('layanan.admin') }}?status=closed" class="menu-item {{ request()->get('status') == 'closed' ? 'active' : '' }}">
+                <a href="{{ route('layanan.admin') }}?status=closed"
+                    class="menu-item {{ request()->get('status') == 'closed' ? 'active' : '' }}">
                     <span class="icon">🔒</span>
                     <span class="text">Closed</span>
                     @if(isset($stats['closed']))
@@ -294,22 +300,27 @@
             @endauth -->
 
             <!-- Pengaturan -->
-            <div class="menu-section">
-                <div class="menu-section-title">Pengaturan</div>
-                <a href="{{ route('manajemen.admin.index') }}" class="menu-item {{ request()->routeIs('manajemen.admin.*') ? 'active' : '' }}">
-                    <span class="icon">👥</span>
-                    <span class="text">Kelola Admin</span>
-                </a>
-                <a href="{{ route('manajemen.aplikasi.index') }}" class="menu-item {{ request()->routeIs('manajemen.aplikasi.*') ? 'active' : '' }}">
-                    <span class="icon">📱</span>
-                    <span class="text">Kelola Aplikasi</span>
-                </a>
-                <a href="{{ route('manajemen.faq.index') }}" class="menu-item {{ request()->routeIs('manajemen.faq.*') ? 'active' : '' }}">
-                    <span class="icon">❓</span>
-                    <span class="text">Kelola FAQ</span>
-                </a>
-            </div>
-        </div>
+            @if(auth()->guard('admin')->check() && auth()->guard('admin')->user()->name === 'superadmin')
+                <div class="menu-section">
+                    <div class="menu-section-title">Pengaturan</div>
+                    <a href="{{ route('manajemen.admin.index') }}"
+                        class="menu-item {{ request()->routeIs('manajemen.admin.*') ? 'active' : '' }}">
+                        <span class="icon">👥</span>
+                        <span class="text">Kelola Admin</span>
+                    </a>
+                    <a href="{{ route('manajemen.aplikasi.index') }}"
+                        class="menu-item {{ request()->routeIs('manajemen.aplikasi.*') ? 'active' : '' }}">
+                        <span class="icon">📱</span>
+                        <span class="text">Kelola Aplikasi</span>
+                    </a>
+                    <a href="{{ route('manajemen.faq.index') }}"
+                        class="menu-item {{ request()->routeIs('manajemen.faq.*') ? 'active' : '' }}">
+                        <span class="icon">❓</span>
+                        <span class="text">Kelola FAQ</span>
+                    </a>
+                </div>
+             @endif
+   </div>
 
         <div class="sidebar-footer">
             @auth('admin')
@@ -350,7 +361,7 @@
     }
 
     // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         const sidebar = document.getElementById('sidebar');
         const toggle = document.querySelector('.mobile-menu-toggle');
 

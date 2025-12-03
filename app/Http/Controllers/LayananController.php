@@ -314,7 +314,8 @@ class LayananController extends Controller
                     $waMessage .= "*Pertanyaan Anda:*\n{$pertanyaan->pertanyaan}\n\n";
                     $waMessage .= "*Jawaban:*\n{$pertanyaan->jawaban}\n\n";
                     $waMessage .= "_Dijawab oleh: {$pertanyaan->replied_by}_\n";
-                    $waMessage .= "_Tanggal: " . now()->format('d/m/Y H:i') . "_";
+                    $waMessage .= "_Tanggal: " . now()->format('d/m/Y H:i') . "_\n\n";
+                    $waMessage .= "_Pesan ini dikirim secara otomatis melalui sistem, mohon untuk tidak membalas pesan ini_";
 
                     $result = $whatsappService->sendMessage($pertanyaan->whatsapp, $waMessage);
 

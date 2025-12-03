@@ -160,7 +160,7 @@
 
         <div class="footer">
             <p>Terima kasih telah menggunakan layanan kami.</p>
-            <p>Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami kembali.</p>
+            <p>Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami kembali melalui saluran yang kami sediakan.</p>
             <p style="margin-top: 15px; font-size: 0.85em; color: #999;">
                 Email ini dikirim secara otomatis, mohon tidak membalas email ini.
             </p>

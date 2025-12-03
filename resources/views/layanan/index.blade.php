@@ -25,7 +25,7 @@
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 900px;
         }
 
         .header {
@@ -287,8 +287,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Helpdesk Layanan Aplikasi PTPN I</h1>
-            <h3>Selamat Datang di Halaman Helpdesk Layanan Aplikasi PTPN I</h3>
+
+            <!-- <h1>Helpdesk Layanan Aplikasi PTPN I</h1> -->
+
+             <img src="{{ asset('images/logo.png') }}" alt="Logo PTPN I" class="logo">
+            <h2>Respon Tanggap Layanan Aplikasi PTPN I</h2>
+             <h3>Selamat Datang di Halaman Helpdesk Layanan Aplikasi PTPN I</h3>
             <p>Silahkan ajukan pertanyaan/keluhan/saran seputar aplikasi yang anda pilih</p>
 
         </div>

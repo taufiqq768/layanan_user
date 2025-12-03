@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -138,6 +139,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="icon">🚫</div>
@@ -148,13 +150,12 @@
 
         <div class="info-box">
             <h3>Cara Mengakses Helpdesk:</h3>
-            <p>Halaman helpdesk hanya dapat diakses melalui aplikasi internal PTPN I dengan menggunakan parameter URL yang valid.</p>
-            <p style="margin-top: 15px;"><strong>Contoh URL yang valid:</strong></p>
+            <p>Halaman helpdesk hanya dapat diakses melalui aplikasi internal PTPN I dengan menggunakan parameter URL
+                yang valid.</p>
+            <!-- <p style="margin-top: 15px;"><strong>Contoh URL yang valid:</strong></p>
             <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                <li style="margin: 8px 0;">• <code>?app=NADINE</code></li>
-                <li style="margin: 8px 0;">• <code>?app=HARMONIS</code></li>
                 <li style="margin: 8px 0;">• <code>?token=your-app-token</code></li>
-            </ul>
+            </ul> -->
         </div>
 
         <div class="contact-info">
@@ -163,4 +164,5 @@
         </div>
     </div>
 </body>
+
 </html>
