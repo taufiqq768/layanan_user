@@ -37,12 +37,11 @@ class AdminAuthController extends Controller
             'password.min' => 'Password minimal 6 karakter',
         ];
 
-        // Only validate CAPTCHA if enabled
-        if (config('captcha.enabled', true)) {
-            $rules['g-recaptcha-response'] = 'required|captcha';
-            $messages['g-recaptcha-response.required'] = 'Mohon centang CAPTCHA';
-            $messages['g-recaptcha-response.captcha'] = 'Verifikasi CAPTCHA gagal, silakan coba lagi';
-        }
+        // Validate CAPTCHA
+        $rules['captcha'] = 'required|captcha';
+        $messages['captcha.required'] = 'Kode keamanan harus diisi';
+        $messages['captcha.captcha'] = 'Kode keamanan salah, silakan coba lagi';
+
 
         $validator = Validator::make($request->all(), $rules, $messages);
 

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin - Layanan User</title>
-    {!! NoCaptcha::renderJs() !!}
+
     <style>
         * {
             margin: 0;
@@ -182,6 +183,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="login-header">
@@ -223,14 +225,28 @@
                 <label for="remember">Ingat saya</label>
             </div>
 
-            @if(config('captcha.enabled', true))
             <div class="form-group" style="margin-bottom: 20px;">
-                {!! NoCaptcha::display() !!}
-                @error('g-recaptcha-response')
+                <label for="captcha">Kode Keamanan <span class="required">*</span></label>
+                <div class="captcha-wrapper" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                    <span class="captcha-image">{!! captcha_img('flat') !!}</span>
+                    <button type="button" class="btn-refresh" id="reload-captcha" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #667eea; padding: 0 10px;" title="Refresh Captcha">
+                        &#x21bb;
+                    </button>
+                </div>
+                <input type="text" id="captcha" name="captcha" placeholder="Masukkan kode yang muncul" required autocomplete="off" style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: all 0.3s;">
+                @error('captcha')
                     <span style="color: #c33; font-size: 13px; margin-top: 5px; display: block;">{{ $message }}</span>
                 @enderror
             </div>
-            @endif
+
+            <script>
+                document.getElementById('reload-captcha').addEventListener('click', function() {
+                    var captchaImage = document.querySelector('.captcha-image img');
+                    // Add timestamp to prevent caching
+                    captchaImage.src = '{{ captcha_src("flat") }}' + '?' + new Date().getTime();
+                });
+            </script>
+
 
             <button type="submit" class="submit-btn">Masuk</button>
         </form>
@@ -244,4 +260,5 @@
         </div>
     </div>
 </body>
+
 </html>
