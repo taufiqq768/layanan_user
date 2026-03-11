@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Layanan Pengguna - Tanya Jawab</title>
-    {!! NoCaptcha::renderJs() !!}
+
     <style>
         * {
             margin: 0;
@@ -284,15 +285,16 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
 
             <!-- <h1>Helpdesk Layanan Aplikasi PTPN I</h1> -->
 
-             <img src="{{ asset('images/logo.png') }}" alt="Logo PTPN I" class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo PTPN I" class="logo">
             <h2>Respon Tanggap Layanan Aplikasi PTPN I</h2>
-             <h3>Selamat Datang di Halaman Helpdesk Layanan Aplikasi PTPN I</h3>
+            <h3>Selamat Datang di Halaman Helpdesk Layanan Aplikasi PTPN I</h3>
             <p>Silahkan ajukan pertanyaan/keluhan/saran seputar aplikasi yang anda pilih</p>
 
         </div>
@@ -316,13 +318,8 @@
 
                 <div class="form-group">
                     <label for="pertanyaan">Pertanyaan/keluhan/saran Anda *</label>
-                    <textarea
-                        id="pertanyaan"
-                        name="pertanyaan"
-                        rows="6"
-                        placeholder="Tuliskan pertanyaan Anda di sini..."
-                        required
-                    ></textarea>
+                    <textarea id="pertanyaan" name="pertanyaan" rows="6"
+                        placeholder="Tuliskan pertanyaan Anda di sini..." required></textarea>
 
                     <div class="file-upload-container" id="uploadContainer">
                         <input type="file" id="gambar" name="gambar" accept="image/*">
@@ -347,29 +344,28 @@
                     <label>Agar kami dapat merespon silakan isi Email dan/atau nomor WhatsApp</label>
 
                     <label for="email" class="note">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="contoh@email.com"
-                    >
+                    <input type="email" id="email" name="email" placeholder="contoh@email.com">
                     <span class="error-message" id="error-email"></span>
                     <label for="whatsapp" class="note">Nomor WhatsApp</label>
-                    <input
-                        type="tel"
-                        id="whatsapp"
-                        name="whatsapp"
-                        placeholder="08123456789"
-                    >
+                    <input type="tel" id="whatsapp" name="whatsapp" placeholder="08123456789">
                     <span class="error-message" id="error-whatsapp"></span>
-                <p class="note">* Minimal satu kontak (Email atau WhatsApp) harus diisi</p>
+                    <p class="note">* Minimal satu kontak (Email atau WhatsApp) harus diisi</p>
                 </div>
 
-                @if(config('captcha.enabled', true))
-                <div class="form-group" style="margin-bottom: 20px;">
-                    {!! NoCaptcha::display() !!}
-                    <span class="error-message" id="error-captcha"></span>
-                </div>
+                @if(!config('captcha.disable', false))
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label>Captcha *</label>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <img id="captchaImage" src="{{ captcha_src('flat') }}" alt="captcha"
+                                style="border-radius: 6px; cursor: pointer;" title="Klik untuk refresh">
+                            <button type="button" id="refreshCaptcha"
+                                style="background: #667eea; color: white; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 1.1em;"
+                                title="Refresh Captcha">&#x21bb;</button>
+                        </div>
+                        <input type="text" id="captcha" name="captcha" placeholder="Masukkan kode captcha" required
+                            style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em;">
+                        <span class="error-message" id="error-captcha"></span>
+                    </div>
                 @endif
 
                 <button type="submit" class="btn-submit">Kirim Pertanyaan</button>
@@ -380,7 +376,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('serviceForm');
             const responseMessage = document.getElementById('responseMessage');
             const aplikasiSelect = document.getElementById('aplikasi');
@@ -394,7 +390,7 @@
             @endif
 
             // Enable/disable FAQ button based on aplikasi selection
-            aplikasiSelect.addEventListener('change', function() {
+            aplikasiSelect.addEventListener('change', function () {
                 if (this.value) {
                     btnFaq.disabled = false;
                 } else {
@@ -403,7 +399,7 @@
             });
 
             // Handle FAQ button click
-            btnFaq.addEventListener('click', function() {
+            btnFaq.addEventListener('click', function () {
                 const aplikasi = aplikasiSelect.value;
                 if (aplikasi) {
                     window.location.href = '{{ route("layanan.faq") }}?aplikasi=' + aplikasi;
@@ -418,7 +414,7 @@
             const removeImageBtn = document.getElementById('removeImage');
 
             // File input change handler
-            fileInput.addEventListener('change', function(e) {
+            fileInput.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {
                     handleFile(file);
@@ -426,19 +422,19 @@
             });
 
             // Drag and drop handlers
-            uploadContainer.addEventListener('dragover', function(e) {
+            uploadContainer.addEventListener('dragover', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 uploadContainer.classList.add('drag-over');
             });
 
-            uploadContainer.addEventListener('dragleave', function(e) {
+            uploadContainer.addEventListener('dragleave', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 uploadContainer.classList.remove('drag-over');
             });
 
-            uploadContainer.addEventListener('drop', function(e) {
+            uploadContainer.addEventListener('drop', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 uploadContainer.classList.remove('drag-over');
@@ -453,7 +449,7 @@
             });
 
             // Remove image handler
-            removeImageBtn.addEventListener('click', function() {
+            removeImageBtn.addEventListener('click', function () {
                 fileInput.value = '';
                 imagePreview.classList.remove('active');
                 uploadContainer.style.display = 'block';
@@ -478,7 +474,7 @@
 
                 // Show preview
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     previewImg.src = e.target.result;
                     imagePreview.classList.add('active');
                     uploadContainer.style.display = 'none';
@@ -514,7 +510,7 @@
                 }
             }
 
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 clearErrors();
                 responseMessage.style.display = 'none';
@@ -577,30 +573,30 @@
                     },
                     body: formData
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showResponseMessage(data.message, true);
-                        form.reset();
-                        // Reset image preview
-                        imagePreview.classList.remove('active');
-                        uploadContainer.style.display = 'block';
-                        fileInput.value = '';
-                    } else {
-                        showResponseMessage(data.message, false);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showResponseMessage('Terjadi kesalahan saat mengirim data. Silakan coba lagi.', false);
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showResponseMessage(data.message, true);
+                            form.reset();
+                            // Reset image preview
+                            imagePreview.classList.remove('active');
+                            uploadContainer.style.display = 'block';
+                            fileInput.value = '';
+                        } else {
+                            showResponseMessage(data.message, false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showResponseMessage('Terjadi kesalahan saat mengirim data. Silakan coba lagi.', false);
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    });
             });
 
-            document.getElementById('email').addEventListener('blur', function() {
+            document.getElementById('email').addEventListener('blur', function () {
                 const email = this.value.trim();
                 if (email !== '') {
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -614,7 +610,7 @@
                 }
             });
 
-            document.getElementById('whatsapp').addEventListener('blur', function() {
+            document.getElementById('whatsapp').addEventListener('blur', function () {
                 const whatsapp = this.value.trim();
                 if (whatsapp !== '') {
                     const whatsappClean = whatsapp.replace(/[^0-9]/g, '');
@@ -627,7 +623,25 @@
                     showError('error-whatsapp', '');
                 }
             });
+
+            // Captcha refresh handler
+            const captchaImage = document.getElementById('captchaImage');
+            const refreshCaptcha = document.getElementById('refreshCaptcha');
+
+            function reloadCaptcha() {
+                if (captchaImage) {
+                    captchaImage.src = '{{ captcha_src("flat") }}' + '?' + Date.now();
+                }
+            }
+
+            if (refreshCaptcha) {
+                refreshCaptcha.addEventListener('click', reloadCaptcha);
+            }
+            if (captchaImage) {
+                captchaImage.addEventListener('click', reloadCaptcha);
+            }
         });
     </script>
 </body>
+
 </html>

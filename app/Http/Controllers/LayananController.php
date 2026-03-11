@@ -80,11 +80,11 @@ class LayananController extends Controller
             'whatsapp.min' => 'Nomor WhatsApp minimal 10 digit',
         ];
 
-        // Only validate CAPTCHA if enabled
-        if (config('captcha.enabled', true)) {
-            $rules['g-recaptcha-response'] = 'required|captcha';
-            $messages['g-recaptcha-response.required'] = 'Mohon centang CAPTCHA';
-            $messages['g-recaptcha-response.captcha'] = 'Verifikasi CAPTCHA gagal, silakan coba lagi';
+        // Only validate CAPTCHA if not disabled
+        if (!config('captcha.disable', false)) {
+            $rules['captcha'] = 'required|captcha';
+            $messages['captcha.required'] = 'Mohon isi kode captcha';
+            $messages['captcha.captcha'] = 'Kode captcha salah, silakan coba lagi';
         }
 
         // Validasi input
